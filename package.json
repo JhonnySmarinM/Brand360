@@ -1,7 +1,7 @@
 {
   "name": "brand360",
   "version": "1.0.0",
-  "description": "Brand360™ - Identity Engine Pro - Transforma conceptos abstractos en identidades de marca tangibles",
+  "description": "Brand360™ - Identity Engine Pro - Turn abstract concepts into tangible brand identities",
   "type": "module",
   "scripts": {
     "dev": "vite",

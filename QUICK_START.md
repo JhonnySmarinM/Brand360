@@ -1,72 +1,72 @@
-# 🚀 Inicio Rápido - Brand360
+# 🚀 Quick start - Brand360
 
-## Instalación en 3 Pasos
+## Installation in 3 steps
 
-### 1. Instalar Dependencias
+### 1. Install dependencies
 ```bash
 npm install
 ```
 
-### 2. Iniciar Servidor de Desarrollo
+### 2. Start development server
 ```bash
 npm run dev
 ```
 
-### 3. Abrir en el Navegador
-La aplicación se abrirá automáticamente en `http://localhost:3000`
+### 3. Open in the browser
+The app will automatically open at `http://localhost:3000`
 
-## ✅ ¡Listo!
+## ✅ All set!
 
-La aplicación funciona en **modo demo** por defecto (sin necesidad de API keys).
+The app runs in **demo mode** by default (no API keys required).
 
-## 🔧 Configurar IA Real (Opcional)
+## 🔧 Configure real AI (optional)
 
-### Para usar OpenAI:
+### To use OpenAI:
 
-1. Crea un archivo `.env` en la raíz del proyecto:
+1. Create a `.env` file in the project root:
 ```env
 VITE_AI_PROVIDER=openai
 VITE_AI_API_KEY=sk-tu-api-key-aqui
 ```
 
-2. Obtén tu API key en: https://platform.openai.com/api-keys
+2. Get your API key at: https://platform.openai.com/api-keys
 
-3. Reinicia el servidor de desarrollo
+3. Restart the development server
 
-### Para usar Google Gemini:
+### To use Google Gemini:
 
-1. Crea un archivo `.env`:
+1. Create a `.env` file:
 ```env
 VITE_AI_PROVIDER=gemini
 VITE_AI_API_KEY=tu-api-key-aqui
 ```
 
-2. Obtén tu API key en: https://makersuite.google.com/app/apikey
+2. Get your API key at: https://makersuite.google.com/app/apikey
 
-3. Reinicia el servidor de desarrollo
+3. Restart the development server
 
-## 📝 Uso Básico
+## 📝 Basic usage
 
-1. **Paso 1**: Escribe la descripción de tu proyecto (mínimo 5 caracteres)
-2. **Paso 2**: Añade keywords presionando Enter (máximo 5)
-3. **Paso 3**: Haz clic en "Generar Identidad"
-4. **Paso 4**: Selecciona tu identidad favorita
-5. **Paso 5**: Visualiza tu marca consolidada
+1. **Step 1**: Write your project description (minimum 5 characters)
+2. **Step 2**: Add keywords by pressing Enter (maximum 5)
+3. **Step 3**: Click on \"Generate identity\"
+4. **Step 4**: Select your favorite identity
+5. **Step 5**: View your consolidated brand
 
-## 🐛 Problemas Comunes
+## 🐛 Common issues
 
 **Error: "Cannot find module"**
-- Ejecuta `npm install` nuevamente
+- Run `npm install` again
 
-**La aplicación no carga**
-- Verifica que el puerto 3000 esté disponible
-- Revisa la consola del navegador para errores
+**The app does not load**
+- Check that port 3000 is available
+- Check the browser console for errors
 
-**Las identidades no se generan**
-- Si usas modo mock, debería funcionar siempre
-- Si usas API, verifica que `.env` esté configurado correctamente
-- Revisa que tu API key sea válida
+**Identities are not being generated**
+- If you use mock mode, it should always work
+- If you use an API, verify that `.env` is configured correctly
+- Check that your API key is valid
 
-## 📚 Más Información
+## 📚 More information
 
-Consulta `README.md` para documentación completa y `DOCUMENTACION_TECNICA.md` para detalles técnicos.
+See `README.md` for full documentation and `DOCUMENTACION_TECNICA.md` for technical details.

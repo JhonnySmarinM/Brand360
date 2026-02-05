@@ -14,17 +14,17 @@ const IntroAnimation = ({ onComplete, enableSkip = true }) => {
   const [showButton, setShowButton] = useState(false);
   const [showSkipButton, setShowSkipButton] = useState(true);
 
-  // Colores corporativos
+  // Brand colors
   const CORP_COLORS = [
-    0xFF007F, // Fucsia (Front)
-    0x40E0D0, // Turquesa (Back)
-    0x007FFF, // Azul brillante (Top)
-    0xFFA500, // Naranja (Bottom)
-    0xFF0000, // Rojo (Right)
-    0x40E0D0  // Turquesa (Left)
+    0xFF007F, // Fuchsia (Front)
+    0x40E0D0, // Turquoise (Back)
+    0x007FFF, // Bright blue (Top)
+    0xFFA500, // Orange (Bottom)
+    0xFF0000, // Red (Right)
+    0x40E0D0  // Turquoise (Left)
   ];
 
-  // Crear una pirámide (tetraedro)
+  // Create a pyramid (tetrahedron)
   const createPyramid = (color) => {
     const geometry = new THREE.ConeGeometry(1.0, 2.0, 4);
     const material = new THREE.MeshStandardMaterial({
@@ -38,12 +38,12 @@ const IntroAnimation = ({ onComplete, enableSkip = true }) => {
     return mesh;
   };
 
-  // Crear el cubo formado por 6 pirámides
+  // Create the cube formed by 6 pyramids
   const createCube = () => {
     const cubeGroup = new THREE.Group();
     const triangles = [];
 
-    // Posiciones iniciales de las 6 pirámides para formar un cubo
+    // Initial positions of the 6 pyramids to form a cube
     const positions = [
       new THREE.Vector3(0, 0, 1.0),   // Front
       new THREE.Vector3(0, 0, -1.0),  // Back
@@ -75,7 +75,7 @@ const IntroAnimation = ({ onComplete, enableSkip = true }) => {
     return { cubeGroup, triangles };
   };
 
-  // Crear la forma de la letra "S"
+  // Create the shape of the letter "S"
   const createS = (triangles) => {
     const sPositions = [
       new THREE.Vector3(-2.0, 2.4, 0.0),
@@ -101,7 +101,7 @@ const IntroAnimation = ({ onComplete, enableSkip = true }) => {
     });
   };
 
-  // Iniciar la animación de transición
+  // Start transition animation
   const startTransition = useCallback(() => {
     const cubeGroup = cubeGroupRef.current;
     const triangles = trianglesRef.current;
@@ -109,15 +109,15 @@ const IntroAnimation = ({ onComplete, enableSkip = true }) => {
 
     const tl = gsap.timeline();
 
-    // FASE 1: Giro Lento (2.5s)
+    // PHASE 1: Slow rotation (2.5s)
     tl.to(cubeGroup.rotation, {
       y: Math.PI * 2,
       duration: 2.5,
       ease: "power1.inOut"
     }, 0);
 
-    // FASE 2: Explosión (1.5s)
-    // 2.1: Rotación rápida
+    // PHASE 2: Explosion (1.5s)
+    // 2.1: Fast rotation
     tl.to(cubeGroup.rotation, {
       y: "+=" + Math.PI * 4,
       x: "+=" + Math.PI * 2,
@@ -125,7 +125,7 @@ const IntroAnimation = ({ onComplete, enableSkip = true }) => {
       ease: "power2.in"
     }, 2.5);
 
-    // 2.2: Separación caótica
+    // 2.2: Chaotic separation
     triangles.forEach((mesh, index) => {
       const randomX = (Math.random() - 0.5) * 8;
       const randomY = (Math.random() - 0.5) * 8;
@@ -151,7 +151,7 @@ const IntroAnimation = ({ onComplete, enableSkip = true }) => {
       }, 3.0);
     });
 
-    // Destello luminoso en el momento máximo de caos
+    // Light flash at maximum chaos
     tl.to({}, {
       duration: 0.3,
       onStart: () => {
@@ -166,7 +166,7 @@ const IntroAnimation = ({ onComplete, enableSkip = true }) => {
       }
     }, 3.5);
 
-    // FASE 3: Formación de la 'S' (1.5s)
+    // PHASE 3: Formation of the 'S' (1.5s)
     triangles.forEach((mesh, index) => {
       tl.to(mesh.position, {
         x: mesh.userData.sPosition.x,
@@ -185,14 +185,14 @@ const IntroAnimation = ({ onComplete, enableSkip = true }) => {
       }, 4.0);
     });
 
-    // Rotación inicial de la 'S'
+    // Initial rotation of the 'S'
     tl.to(cubeGroup.rotation, {
       y: Math.PI * 0.5,
       duration: 0.5,
       ease: "power2.out"
     }, 4.0);
 
-    // FASE 4: 'S' - Giro y Parada (3.0s)
+    // PHASE 4: 'S' - Spin and stop (3.0s)
     tl.to(cubeGroup.rotation, {
       y: Math.PI * 2.5,
       duration: 2.0,
@@ -205,7 +205,7 @@ const IntroAnimation = ({ onComplete, enableSkip = true }) => {
       ease: "power2.out"
     }, 7.5);
 
-    // Pausa final
+    // Final pause
     tl.to({}, {
       duration: 1.5,
       onComplete: () => {
@@ -214,7 +214,7 @@ const IntroAnimation = ({ onComplete, enableSkip = true }) => {
     }, 8.5);
   }, []);
 
-  // Inicializar Three.js
+  // Initialize Three.js
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -222,12 +222,12 @@ const IntroAnimation = ({ onComplete, enableSkip = true }) => {
     const width = container.clientWidth;
     const height = container.clientHeight;
 
-    // Escena
+    // Scene
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xf0f0f0);
     sceneRef.current = scene;
 
-    // Cámara
+    // Camera
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
     camera.position.set(0, 0, 5);
     cameraRef.current = camera;
@@ -239,7 +239,7 @@ const IntroAnimation = ({ onComplete, enableSkip = true }) => {
     container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    // Luces
+    // Lights
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambientLight);
 
@@ -251,26 +251,26 @@ const IntroAnimation = ({ onComplete, enableSkip = true }) => {
     directionalLight2.position.set(-5, -5, -5);
     scene.add(directionalLight2);
 
-    // Crear cubo
+    // Create cube
     const { cubeGroup, triangles } = createCube();
     scene.add(cubeGroup);
     cubeGroupRef.current = cubeGroup;
     trianglesRef.current = triangles;
 
-    // Crear forma 'S'
+    // Create 'S' shape
     createS(triangles);
 
-    // Iniciar animación
+    // Start animation
     startTransition();
 
-    // Loop de renderizado
+    // Render loop
     const animate = () => {
       animationIdRef.current = requestAnimationFrame(animate);
       renderer.render(scene, camera);
     };
     animate();
 
-    // Manejar resize
+    // Handle resize
     const handleResize = () => {
       if (!containerRef.current || !cameraRef.current || !rendererRef.current) return;
       const newWidth = containerRef.current.clientWidth;
@@ -316,13 +316,13 @@ const IntroAnimation = ({ onComplete, enableSkip = true }) => {
       <div ref={containerRef} className="intro-animation-canvas" />
       {showSkipButton && enableSkip && (
         <button className="intro-skip-btn" onClick={handleSkip}>
-          Saltar Intro →
+          Skip Intro →
         </button>
       )}
       {showButton && (
         <div className="intro-tagline">
           <button className="intro-continue-btn" onClick={handleButtonClick}>
-            Continuar
+            Continue
           </button>
         </div>
       )}

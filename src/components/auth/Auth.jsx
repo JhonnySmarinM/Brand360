@@ -7,7 +7,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { login, register, changePassword } from '../../services/authService';
 
 const Auth = () => {
-    // Estados de formulario
+    // Form state
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
@@ -17,7 +17,7 @@ const Auth = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showPassword2, setShowPassword2] = useState(false);
     
-    // Estados para validación
+    // Validation state
     const passwordMessage = '8-character password\nInclude letters and numbers\nSpecial characters/*-+';
     const [emailError, setEmailError] = useState('Please enter a valid email');
     const [emailValid, setEmailValid] = useState(false);
@@ -29,7 +29,7 @@ const Auth = () => {
     const [usernameValid, setUsernameValid] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    // Funciones de validación
+    // Validation helpers
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!email) {
@@ -42,7 +42,7 @@ const Auth = () => {
             setEmailValid(false);
             return false;
         }
-        setEmailError('Email válido');
+        setEmailError('Valid email');
         setEmailValid(true);
         return true;
     };
@@ -58,7 +58,7 @@ const Auth = () => {
             setPasswordValid(false);
             return false;
         }
-        setPasswordError('Password válido');
+        setPasswordError('Valid password');
         setPasswordValid(true);
         return true;
     };
@@ -79,7 +79,7 @@ const Auth = () => {
             setPassword2Valid(false);
             return false;
         }
-        setPassword2Error('Password válido');
+        setPassword2Error('Valid password');
         setPassword2Valid(true);
         return true;
     };
@@ -95,12 +95,12 @@ const Auth = () => {
             setUsernameValid(false);
             return false;
         }
-        setUsernameError('Username válido');
+        setUsernameError('Valid username');
         setUsernameValid(true);
         return true;
     };
 
-    // Handlers para validación en tiempo real
+    // Real-time validation handlers
     const handleEmailChange = (e) => {
         const value = e.target.value;
         setEmail(value);
@@ -128,13 +128,13 @@ const Auth = () => {
         validateUsername(value);
     };
 
-    // Handlers de formularios
+    // Form handlers
     const handleLogin = async () => {
         const isEmailValid = validateEmail(email);
         const isPasswordValid = validatePassword(password);
         
         if (!isEmailValid || !isPasswordValid || !email || !password) {
-            toast.error('Por favor completa todos los campos correctamente');
+            toast.error('Please complete all fields correctly');
             return;
         }
 
@@ -143,14 +143,14 @@ const Auth = () => {
             const result = await login(email, password);
             
             if (result.success) {
-                toast.success('¡Inicio de sesión exitoso! 🎉');
-                // Opcional: redirigir o actualizar estado de la app
+                toast.success('Login successful! 🎉');
+                // Optional: redirect or update app state
                 // window.location.href = '/dashboard';
             } else {
-                toast.error(result.error || 'Error en el inicio de sesión 😞');
+                toast.error(result.error || 'Login error 😞');
             }
         } catch (error) {
-            toast.error('Error en el inicio de sesión 😞');
+            toast.error('Login error 😞');
             console.error('Login error:', error);
         } finally {
             setIsLoading(false);
@@ -165,7 +165,7 @@ const Auth = () => {
         
         if (!isEmailValid || !isPasswordValid || !isPassword2Valid || !isUsernameValid || 
             !email || !password || !password2 || !username) {
-            toast.error('Por favor completa todos los campos correctamente');
+            toast.error('Please complete all fields correctly');
             return;
         }
 
@@ -174,16 +174,16 @@ const Auth = () => {
             const result = await register(email, username, password, password2);
             
             if (result.success) {
-                toast.success('¡Registro exitoso! 🎉');
+                toast.success('Registration successful! 🎉');
                 setIsRegistering(false);
                 clearForm();
-                // Opcional: redirigir o actualizar estado de la app
+                // Optional: redirect or update app state
                 // window.location.href = '/dashboard';
             } else {
-                toast.error(result.error || 'Error en el registro ❌');
+                toast.error(result.error || 'Registration error ❌');
             }
         } catch (error) {
-            toast.error('Error en el registro ❌');
+            toast.error('Registration error ❌');
             console.error('Register error:', error);
         } finally {
             setIsLoading(false);
@@ -197,7 +197,7 @@ const Auth = () => {
         
         if (!isEmailValid || !isPasswordValid || !isPassword2Valid || 
             !email || !password || !password2) {
-            toast.error('Por favor completa todos los campos correctamente');
+            toast.error('Please complete all fields correctly');
             return;
         }
 
@@ -206,15 +206,15 @@ const Auth = () => {
             const result = await changePassword(email, password, password2);
             
             if (result.success) {
-                toast.success('¡Contraseña cambiada exitosamente! 🎉');
+                toast.success('Password changed successfully! 🎉');
                 setIsChangingPassword(false);
                 setIsRegistering(false);
                 clearForm();
             } else {
-                toast.error(result.error || 'Error al cambiar contraseña ❌');
+                toast.error(result.error || 'Error changing password ❌');
             }
         } catch (error) {
-            toast.error('Error al cambiar contraseña ❌');
+            toast.error('Error changing password ❌');
             console.error('Change password error:', error);
         } finally {
             setIsLoading(false);
@@ -268,7 +268,7 @@ const Auth = () => {
             <AuthBox>
                 {!isRegistering && !isChangingPassword ? (
                     <>
-                        <Title>Iniciar Sesión</Title>
+                        <Title>Log in</Title>
                         <InputWrapper>
                             <Input 
                                 type="email" 
@@ -295,15 +295,15 @@ const Auth = () => {
                             disabled={isLoading}
                             style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
                         >
-                            {isLoading ? <ThreeDots color="#fff" height={20} width={50} /> : 'Iniciar Sesión'}
+                            {isLoading ? <ThreeDots color="#fff" height={20} width={50} /> : 'Log in'}
                         </Button>
                         <Text>
-                            <LinkText onClick={toggleRegister}>Registrarse</LinkText> | <LinkText onClick={toggleChangePassword}>Cambiar Contraseña</LinkText>
+                            <LinkText onClick={toggleRegister}>Sign up</LinkText> | <LinkText onClick={toggleChangePassword}>Change password</LinkText>
                         </Text>
                     </>
                 ) : isRegistering ? (
                     <>
-                        <Title>Registrarse</Title>
+                        <Title>Sign up</Title>
                         <InputWrapper>
                             <Input 
                                 type="email" 
@@ -351,15 +351,15 @@ const Auth = () => {
                             disabled={isLoading}
                             style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
                         >
-                            {isLoading ? <ThreeDots color="#fff" height={20} width={50} /> : 'Registrarse'}
+                            {isLoading ? <ThreeDots color="#fff" height={20} width={50} /> : 'Sign up'}
                         </Button>
                         <Text>
-                            <LinkText onClick={toogleLogin}>Volver al Login</LinkText>
+                            <LinkText onClick={toogleLogin}>Back to login</LinkText>
                         </Text>
                     </>
                 ) : (
                     <>
-                        <Title>Cambiar Contraseña</Title>
+                        <Title>Change password</Title>
                         <InputWrapper>
                             <Input 
                                 type="email" 
@@ -398,10 +398,10 @@ const Auth = () => {
                             disabled={isLoading}
                             style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
                         >
-                            {isLoading ? <ThreeDots color="#fff" height={20} width={50} /> : 'Cambiar Contraseña'}
+                            {isLoading ? <ThreeDots color="#fff" height={20} width={50} /> : 'Change password'}
                         </Button>
                         <Text>
-                            <LinkText onClick={toogleLogin}>Volver al Login</LinkText>
+                            <LinkText onClick={toogleLogin}>Back to login</LinkText>
                         </Text>
                     </>
                 )}
@@ -413,7 +413,7 @@ const Auth = () => {
 export default Auth;
 
 // ============================================
-// ESTILOS STYLED-COMPONENTS
+// STYLED-COMPONENTS STYLES
 // ============================================
 
 const Container = styled.div`

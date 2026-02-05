@@ -1,10 +1,10 @@
-# 🚀 Guía de Despliegue en Vercel - Brand360
+# 🚀 Vercel deployment guide - Brand360
 
-## Opción 1: Despliegue desde GitHub (Recomendado)
+## Option 1: Deploy from GitHub (recommended)
 
-### Paso 1: Subir el código a GitHub
+### Step 1: Push the code to GitHub
 
-1. Inicializa un repositorio Git (si no lo has hecho):
+1. Initialize a Git repository (if you haven't already):
 ```bash
 cd Brand360
 git init
@@ -12,81 +12,81 @@ git add .
 git commit -m "Initial commit - Brand360"
 ```
 
-2. Crea un repositorio en GitHub y conéctalo:
+2. Create a repository on GitHub and connect it:
 ```bash
 git remote add origin https://github.com/tu-usuario/brand360.git
 git branch -M main
 git push -u origin main
 ```
 
-### Paso 2: Conectar con Vercel
+### Step 2: Connect with Vercel
 
-1. Ve a [vercel.com](https://vercel.com) e inicia sesión con GitHub
-2. Haz clic en **"Add New Project"**
-3. Importa tu repositorio `brand360`
-4. Vercel detectará automáticamente que es un proyecto Vite
+1. Go to [vercel.com](https://vercel.com) and sign in with GitHub
+2. Click **\"Add New Project\"**
+3. Import your `brand360` repository
+4. Vercel will automatically detect it as a Vite project
 
-### Paso 3: Configurar Variables de Entorno (Opcional)
+### Step 3: Configure environment variables (optional)
 
-Si quieres usar IA real en producción:
+If you want to use real AI in production:
 
-1. En la configuración del proyecto en Vercel, ve a **Settings > Environment Variables**
-2. Añade las siguientes variables:
-   - `VITE_AI_PROVIDER`: `openai` o `gemini` o `mock`
-   - `VITE_AI_API_KEY`: Tu API key (si no usas modo mock)
+1. In the project configuration on Vercel, go to **Settings > Environment Variables**
+2. Add the following variables:
+   - `VITE_AI_PROVIDER`: `openai`, `gemini`, or `mock`
+   - `VITE_AI_API_KEY`: Your API key (if you are not using mock mode)
 
-3. Haz clic en **Save** y **Redeploy**
+3. Click **Save** and **Redeploy**
 
-### Paso 4: Desplegar
+### Step 4: Deploy
 
-1. Vercel desplegará automáticamente
-2. Tu aplicación estará disponible en `https://tu-proyecto.vercel.app`
-3. Cada push a `main` desplegará automáticamente
+1. Vercel will deploy automatically
+2. Your app will be available at `https://your-project.vercel.app`
+3. Each push to `main` will trigger a new deployment
 
 ---
 
-## Opción 2: Despliegue desde CLI de Vercel
+## Option 2: Deploy using Vercel CLI
 
-### Paso 1: Instalar Vercel CLI
+### Step 1: Install Vercel CLI
 
 ```bash
 npm install -g vercel
 ```
 
-### Paso 2: Iniciar sesión
+### Step 2: Log in
 
 ```bash
 vercel login
 ```
 
-### Paso 3: Desplegar
+### Step 3: Deploy
 
-Desde la carpeta del proyecto:
+From the project folder:
 
 ```bash
 cd Brand360
 vercel
 ```
 
-Sigue las instrucciones:
+Follow the prompts:
 - **Set up and deploy?** → `Y`
-- **Which scope?** → Selecciona tu cuenta
-- **Link to existing project?** → `N` (primera vez)
-- **Project name?** → `brand360` (o el que prefieras)
-- **Directory?** → `./` (presiona Enter)
+- **Which scope?** → Select your account
+- **Link to existing project?** → `N` (first time)
+- **Project name?** → `brand360` (or whatever you prefer)
+- **Directory?** → `./` (press Enter)
 - **Override settings?** → `N`
 
-### Paso 4: Configurar Variables de Entorno (Opcional)
+### Step 4: Configure environment variables (optional)
 
 ```bash
 vercel env add VITE_AI_PROVIDER
-# Ingresa: mock (o openai/gemini)
+# Enter: mock (or openai/gemini)
 
 vercel env add VITE_AI_API_KEY
-# Ingresa tu API key (si no usas mock)
+# Enter your API key (if you are not using mock)
 ```
 
-### Paso 5: Desplegar a Producción
+### Step 5: Deploy to production
 
 ```bash
 vercel --prod
@@ -94,82 +94,82 @@ vercel --prod
 
 ---
 
-## Opción 3: Despliegue desde Vercel Dashboard (Sin Git)
+## Option 3: Deploy from Vercel Dashboard (without Git)
 
-1. Ve a [vercel.com](https://vercel.com)
-2. Haz clic en **"Add New Project"**
-3. Selecciona **"Upload"** en lugar de importar desde Git
-4. Comprime la carpeta `Brand360` en un ZIP
-5. Sube el ZIP
-6. Vercel detectará automáticamente la configuración
+1. Go to [vercel.com](https://vercel.com)
+2. Click **\"Add New Project\"**
+3. Select **\"Upload\"** instead of importing from Git
+4. Zip the `Brand360` folder
+5. Upload the ZIP
+6. Vercel will automatically detect the configuration
 
 ---
 
-## ⚙️ Configuración Automática
+## ⚙️ Automatic configuration
 
-El archivo `vercel.json` ya está configurado con:
+The `vercel.json` file is already configured with:
 - ✅ Build command: `npm run build`
 - ✅ Output directory: `dist`
 - ✅ Framework: Vite
-- ✅ Rewrites para SPA (Single Page Application)
-- ✅ Headers de caché para assets
+- ✅ Rewrites for SPA (Single Page Application)
+- ✅ Cache headers for assets
 
-## 🔧 Variables de Entorno en Vercel
+## 🔧 Environment variables on Vercel
 
-### Para Desarrollo (Preview)
-- Ve a **Settings > Environment Variables**
-- Añade variables con **Environment** = `Preview`
+### For development (Preview)
+- Go to **Settings > Environment Variables**
+- Add variables with **Environment** = `Preview`
 
-### Para Producción
-- Añade las mismas variables con **Environment** = `Production`
+### For production
+- Add the same variables with **Environment** = `Production`
 
-### Variables Disponibles:
+### Available variables:
 ```
 VITE_AI_PROVIDER=mock|openai|gemini
-VITE_AI_API_KEY=tu_api_key_aqui
+VITE_AI_API_KEY=your_api_key_here
 ```
 
-## 📝 Verificación Post-Despliegue
+## 📝 Post-deployment checklist
 
-1. ✅ La aplicación carga correctamente
-2. ✅ Los estilos de Tailwind se aplican
-3. ✅ Las animaciones funcionan
-4. ✅ El flujo de 3 pasos funciona
-5. ✅ La generación de identidades funciona (mock o IA real)
+1. ✅ The app loads correctly
+2. ✅ Tailwind styles are applied
+3. ✅ Animations work
+4. ✅ The 3-step flow works
+5. ✅ Identity generation works (mock or real AI)
 
 ## 🐛 Troubleshooting
 
 ### Error: "Build failed"
-- Verifica que `package.json` tenga todos los scripts correctos
-- Revisa los logs de build en Vercel Dashboard
+- Verify that `package.json` has all the correct scripts
+- Check the build logs in the Vercel Dashboard
 
-### Error: "404 en rutas"
-- Verifica que `vercel.json` tenga el rewrite configurado
-- Asegúrate de que el `outputDirectory` sea `dist`
+### Error: "404 on routes"
+- Verify that `vercel.json` has the rewrite configured
+- Make sure the `outputDirectory` is `dist`
 
-### Variables de entorno no funcionan
-- Verifica que las variables empiecen con `VITE_`
-- Haz un redeploy después de añadir variables
-- Verifica que estén en el environment correcto (Production/Preview)
+### Environment variables not working
+- Verify that variable names start with `VITE_`
+- Redeploy after adding variables
+- Check that they are in the correct environment (Production/Preview)
 
-### Assets no cargan
-- Verifica que los paths sean relativos
-- Revisa la configuración de `base` en `vite.config.js` si es necesario
+### Assets not loading
+- Verify that paths are relative
+- Check the `base` configuration in `vite.config.js` if needed
 
-## 🔗 URLs Útiles
+## 🔗 Useful URLs
 
 - **Vercel Dashboard**: https://vercel.com/dashboard
-- **Documentación Vercel**: https://vercel.com/docs
-- **Documentación Vite**: https://vitejs.dev/guide/static-deploy.html#vercel
+- **Vercel docs**: https://vercel.com/docs
+- **Vite docs**: https://vitejs.dev/guide/static-deploy.html#vercel
 
-## ✨ Características del Despliegue
+## ✨ Deployment features
 
-- ✅ **Deploy automático** en cada push a main
-- ✅ **Preview deployments** para cada PR
-- ✅ **HTTPS automático**
-- ✅ **CDN global** para assets estáticos
-- ✅ **Analytics** (opcional, requiere plan Pro)
+- ✅ **Automatic deploys** on every push to main
+- ✅ **Preview deployments** for each PR
+- ✅ **Automatic HTTPS**
+- ✅ **Global CDN** for static assets
+- ✅ **Analytics** (optional, requires Pro plan)
 
 ---
 
-**¡Tu aplicación Brand360 estará en línea en minutos!** 🎉
+**Your Brand360 app will be online in minutes!** 🎉

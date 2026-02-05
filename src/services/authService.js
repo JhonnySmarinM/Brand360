@@ -1,17 +1,17 @@
 /**
- * Servicio de Autenticación para Brand360
- * Se conecta a la API de startapp360.com usando Basic Auth
- * Si no hay conexión, funciona en modo mock/offline
+ * Authentication service for Brand360
+ * Connects to the startapp360.com API using Basic Auth
+ * If there is no connection, it works in mock/offline mode
  */
 
 const API_BASE_URL = 'https://startapp360.com/api/v1';
 const USE_MOCK_MODE = import.meta.env.VITE_AUTH_MOCK === 'true' || false;
 
 /**
- * Crea el header de autorización Basic Auth
- * @param {string} email - Email del usuario
- * @param {string} password - Contraseña del usuario
- * @returns {string} Header de autorización en formato Basic Auth
+ * Creates the Basic Auth authorization header
+ * @param {string} email - User email
+ * @param {string} password - User password
+ * @returns {string} Authorization header in Basic Auth format
  */
 const createBasicAuth = (email, password) => {
   const credentials = `${email}:${password}`;
@@ -35,10 +35,10 @@ const mockResponse = (endpoint, options = {}) => {
             token: `mock_token_${Date.now()}`,
             user: {
               email: email || 'user@example.com',
-              username: username || 'Usuario Demo',
+              username: username || 'Demo User',
               id: 'mock_user_123'
             },
-            message: 'Login exitoso (modo offline)'
+            message: 'Successful login (offline mode)'
           }
         });
       } else if (endpoint === 'auth/register') {
@@ -48,40 +48,40 @@ const mockResponse = (endpoint, options = {}) => {
             token: `mock_token_${Date.now()}`,
             user: {
               email: email || 'user@example.com',
-              username: username || 'Usuario Demo',
+              username: username || 'Demo User',
               id: 'mock_user_123'
             },
-            message: 'Registro exitoso (modo offline)'
+            message: 'Successful registration (offline mode)'
           }
         });
       } else if (endpoint === 'auth/change-password') {
         resolve({
           success: true,
           data: {
-            message: 'Contraseña cambiada exitosamente (modo offline)'
+            message: 'Password changed successfully (offline mode)'
           }
         });
       } else {
         resolve({
           success: true,
-          data: { message: 'Operación exitosa (modo offline)' }
+          data: { message: 'Successful operation (offline mode)' }
         });
       }
-    }, 800); // Simular delay de red
+    }, 800); // Simulate network delay
   });
 };
 
 /**
- * Realiza una petición a la API con autenticación Basic
- * Si falla por error de red, usa modo mock
- * @param {string} endpoint - Endpoint de la API (ej: 'auth/login')
- * @param {object} options - Opciones de la petición
- * @returns {Promise<Response>} Respuesta de la API
+ * Performs an API request with Basic authentication
+ * If it fails due to network error, uses mock mode
+ * @param {string} endpoint - API endpoint (e.g. 'auth/login')
+ * @param {object} options - Request options
+ * @returns {Promise<Response>} API response
  */
 const apiRequest = async (endpoint, options = {}) => {
-  // Si está en modo mock forzado, usar mock directamente
+  // If forced mock mode is enabled, use mock directly
   if (USE_MOCK_MODE) {
-    console.log('🔧 Modo mock activado - usando autenticación offline');
+    console.log('🔧 Mock mode enabled - using offline authentication');
     return await mockResponse(endpoint, options);
   }
 
@@ -113,11 +113,11 @@ const apiRequest = async (endpoint, options = {}) => {
     
     // Si la respuesta no es exitosa (404, 500, etc.), usar modo mock directamente
     if (!response.ok) {
-      // Verificar si es un error que debería activar modo mock
+      // Check if it is an error that should trigger mock mode
       const shouldUseMock = response.status === 404 || response.status === 500 || response.status >= 502;
       
       if (shouldUseMock) {
-        console.log('🔧 API no disponible - usando modo mock automático');
+        console.log('🔧 API not available - using automatic mock mode');
         return await mockResponse(endpoint, options);
       }
     }
@@ -131,13 +131,13 @@ const apiRequest = async (endpoint, options = {}) => {
       try {
         data = await response.json();
       } catch (jsonError) {
-        // Si falla el parseo JSON, usar modo mock
-        console.log('🔧 Respuesta no válida - usando modo mock automático');
+        // If JSON parsing fails, use mock mode
+        console.log('🔧 Invalid response - using automatic mock mode');
         return await mockResponse(endpoint, options);
       }
     } else {
-      // Si no es JSON, usar modo mock
-      console.log('🔧 Respuesta no es JSON - usando modo mock automático');
+      // If it is not JSON, use mock mode
+      console.log('🔧 Response is not JSON - using automatic mock mode');
       return await mockResponse(endpoint, options);
     }
     
@@ -147,31 +147,31 @@ const apiRequest = async (endpoint, options = {}) => {
     
     return { success: true, data };
   } catch (error) {
-    // Si es error de red/CORS, usar modo mock automáticamente
+    // If it is a network/CORS error, automatically use mock mode
     const isNetworkError = error.message.includes('Failed to fetch') || 
                           error.message.includes('NetworkError') ||
                           error.message.includes('CORS') ||
                           !navigator.onLine;
     
     if (isNetworkError) {
-      console.log('🔧 Sin conexión - usando modo mock automático');
+      console.log('🔧 No connection - using automatic mock mode');
       return await mockResponse(endpoint, options);
     }
     
-    // Para otros errores, devolver el error
+    // For other errors, return the error
     console.error('API Error:', error);
     return { 
       success: false, 
-      error: error.message || 'Error de conexión con el servidor' 
+      error: error.message || 'Error connecting to the server' 
     };
   }
 };
 
 /**
- * Inicia sesión con email y contraseña
- * @param {string} email - Email del usuario
- * @param {string} password - Contraseña del usuario
- * @returns {Promise<object>} Resultado del login con token si es exitoso
+ * Logs in with email and password
+ * @param {string} email - User email
+ * @param {string} password - User password
+ * @returns {Promise<object>} Login result with token if successful
  */
 export const login = async (email, password) => {
   const result = await apiRequest('auth/login', {
@@ -182,7 +182,7 @@ export const login = async (email, password) => {
   });
 
   if (result.success && result.data.token) {
-    // Guardar token en localStorage
+    // Save token in localStorage
     localStorage.setItem('authToken', result.data.token);
     localStorage.setItem('userEmail', email);
     if (result.data.user) {
@@ -194,12 +194,12 @@ export const login = async (email, password) => {
 };
 
 /**
- * Registra un nuevo usuario
- * @param {string} email - Email del usuario
- * @param {string} username - Nombre de usuario
- * @param {string} password - Contraseña del usuario
- * @param {string} password2 - Confirmación de contraseña
- * @returns {Promise<object>} Resultado del registro
+ * Registers a new user
+ * @param {string} email - User email
+ * @param {string} username - Username
+ * @param {string} password - User password
+ * @param {string} password2 - Password confirmation
+ * @returns {Promise<object>} Registration result
  */
 export const register = async (email, username, password, password2) => {
   const result = await apiRequest('auth/register', {
@@ -213,7 +213,7 @@ export const register = async (email, username, password, password2) => {
   });
 
   if (result.success && result.data.token) {
-    // Guardar token en localStorage
+    // Save token in localStorage
     localStorage.setItem('authToken', result.data.token);
     localStorage.setItem('userEmail', email);
     if (result.data.user) {
@@ -225,20 +225,20 @@ export const register = async (email, username, password, password2) => {
 };
 
 /**
- * Cambia la contraseña del usuario
- * @param {string} email - Email del usuario
- * @param {string} password - Nueva contraseña
- * @param {string} password2 - Confirmación de nueva contraseña
- * @returns {Promise<object>} Resultado del cambio de contraseña
+ * Changes the user's password
+ * @param {string} email - User email
+ * @param {string} password - New password
+ * @param {string} password2 - New password confirmation
+ * @returns {Promise<object>} Password change result
  */
 export const changePassword = async (email, password, password2) => {
-  // Intentar usar token si está disponible, sino usar Basic Auth con email
+  // Try to use token if available, otherwise use Basic Auth with email
   const token = localStorage.getItem('authToken');
   
   const result = await apiRequest('auth/change-password', {
     method: 'POST',
-    token: token || undefined, // Usar token si está disponible
-    email: token ? undefined : email, // Solo usar email si no hay token
+    token: token || undefined, // Use token if available
+    email: token ? undefined : email, // Only use email if there is no token
     body: {
       email,
       newPassword: password,
@@ -250,7 +250,7 @@ export const changePassword = async (email, password, password2) => {
 };
 
 /**
- * Cierra la sesión del usuario
+ * Logs the user out
  */
 export const logout = () => {
   localStorage.removeItem('authToken');
@@ -259,24 +259,24 @@ export const logout = () => {
 };
 
 /**
- * Verifica si el usuario está autenticado
- * @returns {boolean} True si hay un token guardado
+ * Checks whether the user is authenticated
+ * @returns {boolean} True if there is a stored token
  */
 export const isAuthenticated = () => {
   return !!localStorage.getItem('authToken');
 };
 
 /**
- * Obtiene el token de autenticación guardado
- * @returns {string|null} Token de autenticación o null
+ * Gets the stored authentication token
+ * @returns {string|null} Authentication token or null
  */
 export const getAuthToken = () => {
   return localStorage.getItem('authToken');
 };
 
 /**
- * Obtiene los datos del usuario guardados
- * @returns {object|null} Datos del usuario o null
+ * Gets stored user data
+ * @returns {object|null} User data or null
  */
 export const getUserData = () => {
   const userData = localStorage.getItem('userData');

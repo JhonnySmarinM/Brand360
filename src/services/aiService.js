@@ -1,17 +1,17 @@
 /**
- * Servicio de IA para Brand360
- * Soporta múltiples proveedores: OpenAI, Google Gemini, o modo mock
+ * AI service for Brand360
+ * Supports multiple providers: OpenAI, Google Gemini, or mock mode
  */
 
 const AI_PROVIDER = import.meta.env.VITE_AI_PROVIDER || 'mock'; // 'openai', 'gemini', 'mock'
 const API_KEY = import.meta.env.VITE_AI_API_KEY || '';
 
 /**
- * Genera identidades de marca usando IA
- * @param {string} projectDesc - Descripción del proyecto
- * @param {Array<string>} keywords - Palabras clave/valores
- * @param {string} plan - Plan seleccionado (free, basic, premium, pro)
- * @returns {Promise<Array>} Array de identidades generadas
+ * Generates brand identities using AI
+ * @param {string} projectDesc - Project description
+ * @param {Array<string>} keywords - Keywords/values
+ * @param {string} plan - Selected plan (free, basic, premium, pro)
+ * @returns {Promise<Array>} Array of generated identities
  */
 export const generateBrandIdentities = async (projectDesc, keywords, plan = 'premium') => {
   if (AI_PROVIDER === 'mock') {
@@ -37,36 +37,36 @@ export const generateBrandIdentities = async (projectDesc, keywords, plan = 'pre
 };
 
 /**
- * Construye el prompt para la IA
+ * Builds the prompt for the AI
  */
 const buildPrompt = (projectDesc, keywords, plan) => {
   const keywordList = keywords.join(', ');
   const planContext = {
-    free: 'una propuesta básica y simple',
-    basic: 'dos propuestas creativas y diferenciadas',
-    premium: 'tres propuestas sofisticadas y profesionales',
-    pro: 'tres propuestas de lujo y alta gama'
+    free: 'one basic and simple proposal',
+    basic: 'two creative and differentiated proposals',
+    premium: 'three sophisticated and professional proposals',
+    pro: 'three high-end, premium proposals'
   };
 
-  return `Eres un experto en branding y creación de identidades de marca. 
-Crea ${planContext[plan]} para el siguiente proyecto:
+  return `You are an expert in branding and brand identity creation.
+Create ${planContext[plan]} for the following project:
 
-Descripción: ${projectDesc}
-Valores/Keywords: ${keywordList}
+Description: ${projectDesc}
+Values/Keywords: ${keywordList}
 
-Para cada identidad, proporciona:
-1. Nombre comercial (creativo, memorable, único)
-2. Slogan (frase corta y poderosa que comunique la propuesta de valor)
-3. Concepto Visual (descripción del estilo, tipografía, sensaciones de diseño)
-4. Tags (2-3 palabras clave que definan la identidad)
+For each identity, provide:
+1. Brand name (creative, memorable, unique)
+2. Slogan (short and powerful phrase that communicates the value proposition)
+3. Visual concept (description of style, typography, and design feelings)
+4. Tags (2-3 keywords that define the identity)
 
-Responde SOLO con un JSON válido en este formato:
+Respond ONLY with valid JSON in this format:
 {
   "identities": [
     {
-      "name": "Nombre",
-      "slogan": "Slogan aquí",
-      "concept": "Concepto visual aquí",
+      "name": "Name",
+      "slogan": "Slogan here",
+      "concept": "Visual concept here",
       "tags": ["Tag1", "Tag2"]
     }
   ]
@@ -74,7 +74,7 @@ Responde SOLO con un JSON válido en este formato:
 };
 
 /**
- * Genera identidades usando OpenAI API
+ * Generates identities using OpenAI API
  */
 const generateWithOpenAI = async (prompt, plan) => {
   if (!API_KEY) {
@@ -92,7 +92,7 @@ const generateWithOpenAI = async (prompt, plan) => {
       messages: [
         {
           role: 'system',
-          content: 'Eres un experto en branding. Responde SOLO con JSON válido, sin texto adicional.'
+          content: 'You are a branding expert. Respond ONLY with valid JSON, without any extra text.'
         },
         {
           role: 'user',
@@ -122,7 +122,7 @@ const generateWithOpenAI = async (prompt, plan) => {
 };
 
 /**
- * Genera identidades usando Google Gemini API
+ * Generates identities using Google Gemini API
  */
 const generateWithGemini = async (prompt, plan) => {
   if (!API_KEY) {
@@ -170,38 +170,38 @@ const generateWithGemini = async (prompt, plan) => {
 };
 
 /**
- * Genera identidades mock (modo demo)
+ * Generates mock identities (demo mode)
  */
 const generateMockIdentities = (plan) => {
   const mockData = {
     free: [
       { 
         name: "Lumina", 
-        slogan: "Brillantez en cada paso.", 
-        concept: "Minimalismo suizo, tipografía Neo-Grotesk.", 
-        tags: ["Moderno", "Luz"] 
+        slogan: "Brilliance in every step.", 
+        concept: "Swiss minimalism, Neo-Grotesk typography.", 
+        tags: ["Modern", "Light"] 
       }
     ],
     basic: [
       { 
         name: "Vortex", 
-        slogan: "Impulsando el mañana.", 
-        concept: "Estilo Cyberpunk, degradados neón.", 
-        tags: ["Energía", "Tech"] 
+        slogan: "Driving tomorrow forward.", 
+        concept: "Cyberpunk style, neon gradients.", 
+        tags: ["Energy", "Tech"] 
       },
       { 
         name: "Origen", 
-        slogan: "Naturalmente puro.", 
-        concept: "Estética orgánica, tonos tierra.", 
-        tags: ["Eco", "Puro"] 
+        slogan: "Naturally pure.", 
+        concept: "Organic aesthetics, earthy tones.", 
+        tags: ["Eco", "Pure"] 
       }
     ],
     premium: [
       { 
         name: "Zenith", 
-        slogan: "Alcanza lo inalcanzable.", 
-        concept: "Lujo geométrico, azul medianoche y oro.", 
-        tags: ["Elite", "Cúspide"] 
+        slogan: "Reach the unreachable.", 
+        concept: "Geometric luxury, midnight blue and gold.", 
+        tags: ["Elite", "Pinnacle"] 
       },
       { 
         name: "Nexus", 
@@ -211,29 +211,29 @@ const generateMockIdentities = (plan) => {
       },
       { 
         name: "Kinetix", 
-        slogan: "Movimiento sin límites.", 
-        concept: "Líneas de velocidad, tipografía Italic Heavy.", 
-        tags: ["Agilidad", "Pro"] 
+        slogan: "Movement without limits.", 
+        concept: "Speed lines, Italic Heavy typography.", 
+        tags: ["Agility", "Pro"] 
       }
     ],
     pro: [
       { 
         name: "Aethel", 
-        slogan: "Legado en evolución.", 
-        concept: "Serif clásica moderna, espaciado amplio.", 
-        tags: ["Lujo", "Historia"] 
+        slogan: "Legacy in evolution.", 
+        concept: "Modern classic serif, wide spacing.", 
+        tags: ["Luxury", "Heritage"] 
       },
       { 
         name: "Quark", 
-        slogan: "Pequeño gran impacto.", 
-        concept: "Arquitectura Bauhaus, colores primarios.", 
-        tags: ["Ciencia", "Pop"] 
+        slogan: "Small but mighty impact.", 
+        concept: "Bauhaus architecture, primary colors.", 
+        tags: ["Science", "Pop"] 
       },
       { 
         name: "Obsidian", 
-        slogan: "Fuerza en el silencio.", 
-        concept: "Monocromático, texturas de piedra.", 
-        tags: ["Poder", "Sólido"] 
+        slogan: "Strength in silence.", 
+        concept: "Monochrome, stone textures.", 
+        tags: ["Power", "Solid"] 
       }
     ]
   };
