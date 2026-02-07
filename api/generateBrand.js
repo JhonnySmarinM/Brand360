@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   }
 
   const { prompt, plan = 'premium' } = req.body || {};
-  const apiKey = process.env.HUGGING_FACE_API_KEY;
+  const apiKey = (process.env.HUGGING_FACE_API_KEY || '').trim();
 
   if (!apiKey) {
     return res.status(200).json({
