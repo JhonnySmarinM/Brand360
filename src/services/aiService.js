@@ -1,17 +1,14 @@
 /**
  * AI service for Brand360
- * Supports multiple providers: OpenAI, Google Gemini, or mock mode
+ * Genera solo brand name y slogan (sin logo).
+ * Providers: OpenAI, Google Gemini, Hugging Face, o mock
+ * Keys centralizadas en config/AiModel.js
  */
 
-const AI_PROVIDER = import.meta.env.VITE_AI_PROVIDER || 'mock'; // 'openai', 'gemini', 'mock'
-const API_KEY = import.meta.env.VITE_AI_API_KEY || '';
+import { AI_PROVIDER, API_KEY, API_BASE } from '../../config/AiModel.js';
 
 /**
- * Generates brand identities using AI
- * @param {string} projectDesc - Project description
- * @param {Array<string>} keywords - Keywords/values
- * @param {string} plan - Selected plan (free, basic, premium, pro)
- * @returns {Promise<Array>} Array of generated identities
+ * Generates brand identities (name, slogan, concept, tags) - NO logo
  */
 export const generateBrandIdentities = async (projectDesc, keywords, plan = 'premium') => {
   if (AI_PROVIDER === 'mock') {
@@ -20,18 +17,19 @@ export const generateBrandIdentities = async (projectDesc, keywords, plan = 'pre
 
   try {
     const prompt = buildPrompt(projectDesc, keywords, plan);
-    
+
     switch (AI_PROVIDER) {
       case 'openai':
         return await generateWithOpenAI(prompt, plan);
       case 'gemini':
         return await generateWithGemini(prompt, plan);
+      case 'huggingface':
+        return await generateWithHuggingFace(prompt, plan);
       default:
         return generateMockIdentities(plan);
     }
   } catch (error) {
     console.error('Error generando identidades:', error);
-    // Fallback a datos mock en caso de error
     return generateMockIdentities(plan);
   }
 };
@@ -48,25 +46,26 @@ const buildPrompt = (projectDesc, keywords, plan) => {
     pro: 'three high-end, premium proposals'
   };
 
-  return `You are an expert in branding and brand identity creation.
-Create ${planContext[plan]} for the following project:
+  return `You are an expert in branding and brand identity creation. Create ${planContext[plan]} that are DIFFERENT from each other in style, tone, and approach. Each proposal must be unique and surprising—avoid generic or repeated ideas.
 
-Description: ${projectDesc}
+Project description: ${projectDesc}
 Values/Keywords: ${keywordList}
+
+IMPORTANT: Generate FRESH, ORIGINAL ideas. Vary the style: one proposal could be minimal, another bold, another elegant. Use different languages or tones. Never repeat Zenith, Nexus, Kinetix, Lumina, Vortex, Origen, Aethel, Quark, or Obsidian.
 
 For each identity, provide:
 1. Brand name (creative, memorable, unique)
-2. Slogan (short and powerful phrase that communicates the value proposition)
-3. Visual concept (description of style, typography, and design feelings)
-4. Tags (2-3 keywords that define the identity)
+2. Slogan (short and powerful phrase)
+3. Visual concept (style, typography, design feelings)
+4. Tags (2-3 keywords)
 
-Respond ONLY with valid JSON in this format:
+Respond ONLY with valid JSON, no extra text:
 {
   "identities": [
     {
-      "name": "Name",
-      "slogan": "Slogan here",
-      "concept": "Visual concept here",
+      "name": "UniqueName",
+      "slogan": "Your slogan",
+      "concept": "Visual concept",
       "tags": ["Tag1", "Tag2"]
     }
   ]
@@ -109,16 +108,10 @@ const generateWithOpenAI = async (prompt, plan) => {
   }
 
   const data = await response.json();
-  const content = data.choices[0].message.content;
-  
-  // Extraer JSON de la respuesta
-  const jsonMatch = content.match(/\{[\s\S]*\}/);
-  if (jsonMatch) {
-    const parsed = JSON.parse(jsonMatch[0]);
-    return parsed.identities || generateMockIdentities(plan);
-  }
-
-  return generateMockIdentities(plan);
+  if (data.error) throw new Error(data.error.message || 'OpenAI API error');
+  const content = data.choices?.[0]?.message?.content;
+  if (!content) throw new Error('Respuesta vacía de OpenAI');
+  return parseIdentitiesFromContent(content, plan);
 };
 
 /**
@@ -130,7 +123,7 @@ const generateWithGemini = async (prompt, plan) => {
   }
 
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
     {
       method: 'POST',
       headers: {
@@ -157,16 +150,65 @@ const generateWithGemini = async (prompt, plan) => {
   }
 
   const data = await response.json();
-  const content = data.candidates[0].content.parts[0].text;
-  
-  // Extraer JSON de la respuesta
-  const jsonMatch = content.match(/\{[\s\S]*\}/);
-  if (jsonMatch) {
-    const parsed = JSON.parse(jsonMatch[0]);
-    return parsed.identities || generateMockIdentities(plan);
+  if (data.error) throw new Error(data.error.message || 'Gemini API error');
+  const candidates = data.candidates;
+  if (!candidates?.[0]?.content?.parts?.[0]?.text) {
+    throw new Error('Respuesta vacía de Gemini');
   }
+  const content = candidates[0].content.parts[0].text;
+  return parseIdentitiesFromContent(content, plan);
+};
 
+/**
+ * Generates identities using Hugging Face API (via serverless)
+ * Solo texto: brand + slogan. Sin logo.
+ */
+const generateWithHuggingFace = async (prompt, plan) => {
+  const base = (API_BASE || '').replace(/\/$/, '');
+  const url = base ? `${base}/api/generateBrand` : '/api/generateBrand';
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt, plan })
+  });
+  const contentType = response.headers.get('content-type') || '';
+  if (!contentType.includes('application/json')) {
+    throw new Error('API no disponible. Usa "npm run dev:api" para Hugging Face.');
+  }
+  const data = await response.json();
+  if (!response.ok) {
+    if (data.identities?.length) return data.identities;
+    throw new Error(data.error || `Hugging Face API: ${response.statusText}`);
+  }
+  if (data.identities) return data.identities;
+  if (data.brandName && data.slogan) {
+    return [{
+      name: data.brandName,
+      slogan: data.slogan,
+      concept: data.logoDescription || '',
+      tags: data.tags || []
+    }];
+  }
   return generateMockIdentities(plan);
+};
+
+/** Extrae y valida identities desde el texto de respuesta */
+const parseIdentitiesFromContent = (content, plan) => {
+  const jsonMatch = content.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) return generateMockIdentities(plan);
+  try {
+    const parsed = JSON.parse(jsonMatch[0]);
+    const identities = parsed.identities;
+    if (!Array.isArray(identities) || identities.length === 0) return generateMockIdentities(plan);
+    return identities.map((id) => ({
+      name: id.name || 'Brand',
+      slogan: id.slogan || '',
+      concept: id.concept || '',
+      tags: Array.isArray(id.tags) ? id.tags : []
+    }));
+  } catch {
+    return generateMockIdentities(plan);
+  }
 };
 
 /**

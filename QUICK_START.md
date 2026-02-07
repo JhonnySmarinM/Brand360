@@ -1,23 +1,35 @@
 # 🚀 Quick start - Brand360
 
-## Installation in 3 steps
+## Installation
 
-### 1. Install dependencies
 ```bash
 npm install
 ```
 
-### 2. Start development server
+## Modo Hugging Face (recomendado)
+
+1. Copia `.env.example` a `.env` y añade tu API key:
+   ```env
+   VITE_AI_PROVIDER=huggingface
+   HUGGING_FACE_API_KEY=hf_tu_clave
+   ```
+
+2. Ejecuta (usa `vercel dev` para que la API funcione):
+   ```bash
+   npm run dev:api
+   ```
+
+3. Abre `http://localhost:3000`
+
+Ver `HUGGING_FACE.md` para más detalles.
+
+## Modo demo (sin API)
+
 ```bash
 npm run dev
 ```
 
-### 3. Open in the browser
-The app will automatically open at `http://localhost:3000`
-
-## ✅ All set!
-
-The app runs in **demo mode** by default (no API keys required).
+La app usa datos mock por defecto si no configuras `.env`.
 
 ## 🔧 Configure real AI (optional)
 
@@ -44,6 +56,18 @@ VITE_AI_API_KEY=tu-api-key-aqui
 2. Get your API key at: https://makersuite.google.com/app/apikey
 
 3. Restart the development server
+
+### To use Hugging Face (brand + slogan only, no logo):
+
+1. Create a `.env` file:
+```env
+VITE_AI_PROVIDER=huggingface
+```
+
+2. In Vercel Dashboard → Project → Settings → Environment Variables, add:
+   - `HUGGING_FACE_API_KEY` = your key from https://huggingface.co/settings/tokens
+
+3. Run locally with `vercel dev` (not `npm run dev`) so the API works, or deploy to Vercel
 
 ## 📝 Basic usage
 

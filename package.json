@@ -5,10 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:api": "vercel dev",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@huggingface/inference": "^4.13.11",
     "gsap": "^3.14.2",
     "lucide-react": "^0.263.1",
     "react": "^18.2.0",

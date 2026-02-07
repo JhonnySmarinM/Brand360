@@ -15,6 +15,24 @@ import {
 } from 'lucide-react';
 import { generateBrandIdentities } from '../services/aiService';
 
+const MOCK_IDENTITIES = {
+  free: [{ name: 'Lumina', slogan: 'Brilliance in every step.', concept: '', tags: ['Modern'] }],
+  basic: [
+    { name: 'Vortex', slogan: 'Driving tomorrow forward.', concept: '', tags: ['Energy'] },
+    { name: 'Origen', slogan: 'Naturally pure.', concept: '', tags: ['Eco'] }
+  ],
+  premium: [
+    { name: 'Zenith', slogan: 'Reach the unreachable.', concept: '', tags: ['Elite'] },
+    { name: 'Nexus', slogan: 'Conexiones que importan.', concept: '', tags: ['Red'] },
+    { name: 'Kinetix', slogan: 'Movement without limits.', concept: '', tags: ['Pro'] }
+  ],
+  pro: [
+    { name: 'Aethel', slogan: 'Legacy in evolution.', concept: '', tags: ['Luxury'] },
+    { name: 'Quark', slogan: 'Small but mighty impact.', concept: '', tags: ['Science'] },
+    { name: 'Obsidian', slogan: 'Strength in silence.', concept: '', tags: ['Power'] }
+  ]
+};
+
 const BrandAIModule = () => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -47,10 +65,12 @@ const BrandAIModule = () => {
 
     try {
       const generated = await generateBrandIdentities(projectDesc, keywords, selectedPlan);
-      setIdentities(generated);
+      setIdentities(Array.isArray(generated) && generated.length > 0 ? generated : MOCK_IDENTITIES[selectedPlan] || MOCK_IDENTITIES.premium);
       setStep(2);
     } catch (error) {
       console.error('Error al generar identidades con IA:', error);
+      setIdentities(MOCK_IDENTITIES[selectedPlan] || MOCK_IDENTITIES.premium);
+      setStep(2);
     } finally {
       setLoading(false);
     }
@@ -65,9 +85,10 @@ const BrandAIModule = () => {
 
     try {
       const generated = await generateBrandIdentities(projectDesc, keywords, plan);
-      setIdentities(generated);
+      setIdentities(Array.isArray(generated) && generated.length > 0 ? generated : MOCK_IDENTITIES[plan] || MOCK_IDENTITIES.premium);
     } catch (error) {
       console.error('Error al cambiar de plan con IA:', error);
+      setIdentities(MOCK_IDENTITIES[plan] || MOCK_IDENTITIES.premium);
     } finally {
       setLoading(false);
     }
@@ -238,7 +259,7 @@ const BrandAIModule = () => {
                         
                         <div className="space-y-2">
                           <div className="flex flex-wrap gap-1">
-                            {id.tags.map(t => <span key={t} className="text-[8px] font-black px-2 py-1 bg-slate-100 rounded-md text-slate-500 uppercase">{t}</span>)}
+                            {(id.tags || []).map(t => <span key={t} className="text-[8px] font-black px-2 py-1 bg-slate-100 rounded-md text-slate-500 uppercase">{t}</span>)}
                           </div>
                         </div>
                         
