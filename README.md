@@ -218,4 +218,3 @@ For questions or support, open an issue in the repository.
 
 ---
 
-**Brand360™** - Where ideas become brands. ✨
