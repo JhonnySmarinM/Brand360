@@ -4,7 +4,9 @@
   left: 0;
   width: 100%;
   height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: radial-gradient(circle at top left, #FACC15 0%, transparent 45%),
+    radial-gradient(circle at bottom right, #D946EF 0%, transparent 45%),
+    linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
   z-index: 9999;
   overflow: hidden;
   display: flex;
@@ -26,9 +28,9 @@
   top: 20px;
   right: 20px;
   padding: 12px 24px;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(15, 23, 42, 0.85);
   backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(248, 250, 252, 0.3);
   border-radius: 25px;
   color: white;
   font-size: 14px;
@@ -43,8 +45,8 @@
 }
 
 .intro-skip-btn:hover {
-  background: rgba(0, 0, 0, 0.8);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(15, 23, 42, 0.95);
+  border-color: rgba(248, 250, 252, 0.5);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
@@ -83,14 +85,7 @@
   font-size: clamp(24px, 5vw, 48px);
   font-weight: 800;
   margin-bottom: 12px;
-  background: linear-gradient(
-    90deg,
-    #FF007F 0%,
-    #FFA500 25%,
-    #FFFF00 50%,
-    #40E0D0 75%,
-    #FF0000 100%
-  );
+  background: linear-gradient(90deg, #FACC15 0%, #D946EF 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -106,10 +101,10 @@
   font-size: clamp(14px, 2.5vw, 20px);
   font-weight: 500;
   margin-bottom: 8px;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(15, 23, 42, 0.9);
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   letter-spacing: 1px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 8px rgba(255, 255, 255, 0.5);
 }
 
 /* Copyright */
@@ -118,7 +113,7 @@
   font-size: clamp(12px, 2vw, 16px);
   font-weight: 400;
   margin-bottom: 30px;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(15, 23, 42, 0.7);
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   letter-spacing: 2px;
 }
@@ -126,7 +121,7 @@
 /* Continue button */
 .intro-continue-btn {
   padding: 16px 48px;
-  background: linear-gradient(135deg, #FF007F 0%, #40E0D0 100%);
+  background: linear-gradient(135deg, #FACC15 0%, #D946EF 100%);
   border: none;
   border-radius: 50px;
   color: white;
@@ -160,7 +155,7 @@
 .intro-continue-btn:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
-  background: linear-gradient(135deg, #FF0088 0%, #50F0E0 100%);
+  background: linear-gradient(135deg, #fde047 0%, #e879f9 100%);
 }
 
 .intro-continue-btn:active {

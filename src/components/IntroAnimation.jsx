@@ -16,12 +16,12 @@ const IntroAnimation = ({ onComplete, enableSkip = true }) => {
 
   // Brand colors
   const CORP_COLORS = [
-    0xFF007F, // Fuchsia (Front)
-    0x40E0D0, // Turquoise (Back)
-    0x007FFF, // Bright blue (Top)
-    0xFFA500, // Orange (Bottom)
-    0xFF0000, // Red (Right)
-    0x40E0D0  // Turquoise (Left)
+    0xFFFFFF, // White (Front)
+    0xFACC15, // Yellow (Back)
+    0xFFFFFF, // White (Top)
+    0xFACC15, // Yellow (Bottom)
+    0xFFFFFF, // White (Right)
+    0xD946EF  // Fuchsia (Left)
   ];
 
   // Create a pyramid (tetrahedron)
@@ -224,7 +224,7 @@ const IntroAnimation = ({ onComplete, enableSkip = true }) => {
 
     // Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf0f0f0);
+    scene.background = new THREE.Color(0xffffff); // White background
     sceneRef.current = scene;
 
     // Camera
