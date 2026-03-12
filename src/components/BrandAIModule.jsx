@@ -7,6 +7,7 @@ import {
   X, 
   ArrowRight,
   Share2,
+  Download,
   Target,
   RefreshCw,
   Zap,
@@ -56,6 +57,55 @@ const BrandAIModule = () => {
 
   const removeKeyword = (index) => {
     setKeywords(keywords.filter((_, i) => i !== index));
+  };
+
+  const handleDownloadBrandKit = () => {
+    if (!selectedIdentity) return;
+    const slug = selectedIdentity.name.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
+    const date = new Date().toISOString().slice(0, 10);
+
+    const kit = {
+      brandName: selectedIdentity.name,
+      slogan: selectedIdentity.slogan,
+      concept: selectedIdentity.concept || '',
+      tags: selectedIdentity.tags || [],
+      seoScore: '9.8/10',
+      generatedAt: new Date().toISOString(),
+      projectContext: { description: projectDesc, keywords }
+    };
+
+    const txt = `BRAND360 — Brand Kit
+══════════════════════════════════════
+
+OFFICIAL NAMING
+${selectedIdentity.name.toUpperCase()}
+
+SLOGAN
+"${selectedIdentity.slogan}"
+
+CONCEPT
+${selectedIdentity.concept || '—'}
+
+TAGS
+${(selectedIdentity.tags || []).join(', ') || '—'}
+
+METRICS
+SEO Score: 9.8/10
+Generated: ${date}
+
+──────────────────────────────────────
+BRAND360 Identity Engine Pro
+`;
+
+    const json = JSON.stringify(kit, null, 2);
+
+    const blob = new Blob([txt + '\n\n--- JSON DATA ---\n\n' + json], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${slug}_BrandKit_${date}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const handleGenerate = async () => {
@@ -334,8 +384,11 @@ const BrandAIModule = () => {
                   </div>
 
                   <div className="flex flex-col gap-3">
-                    <button className="w-full py-5 bg-yellow-500 text-slate-950 font-black rounded-3xl shadow-xl shadow-yellow-100 hover:scale-[1.02] transition-all flex items-center justify-center gap-3">
-                      Download full Brand Kit <Share2 size={20}/>
+                    <button 
+                      onClick={handleDownloadBrandKit}
+                      className="w-full py-5 bg-yellow-500 text-slate-950 font-black rounded-3xl shadow-xl shadow-yellow-100 hover:scale-[1.02] transition-all flex items-center justify-center gap-3"
+                    >
+                      Download full Brand Kit <Download size={20}/>
                     </button>
                     <button 
                       onClick={() => { setStep(1); setSelectedIdentity(null); setProjectDesc(''); }}
