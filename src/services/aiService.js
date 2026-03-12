@@ -7,6 +7,9 @@
 
 import { AI_PROVIDER, API_KEY, API_BASE } from '../../config/AiModel.js';
 
+/** Número de marcas a generar por plan */
+export const BRANDS_PER_PLAN = { free: 3, basic: 4, premium: 6, pro: 12 };
+
 /**
  * Generates brand identities (name, slogan, concept, tags) - NO logo
  */
@@ -39,14 +42,9 @@ export const generateBrandIdentities = async (projectDesc, keywords, plan = 'pre
  */
 const buildPrompt = (projectDesc, keywords, plan) => {
   const keywordList = keywords.join(', ');
-  const planContext = {
-    free: 'one basic and simple proposal',
-    basic: 'two creative and differentiated proposals',
-    premium: 'three sophisticated and professional proposals',
-    pro: 'three high-end, premium proposals'
-  };
+  const count = BRANDS_PER_PLAN[plan] ?? BRANDS_PER_PLAN.premium;
 
-  return `You are an expert in branding and brand identity creation. Create ${planContext[plan]} that are DIFFERENT from each other in style, tone, and approach. Each proposal must be unique and surprising—avoid generic or repeated ideas.
+  return `You are an expert in branding and brand identity creation. Create EXACTLY ${count} brand proposals that are DIFFERENT from each other in style, tone, and approach. Each proposal must be unique and surprising—avoid generic or repeated ideas.
 
 Project description: ${projectDesc}
 Values/Keywords: ${keywordList}
@@ -200,12 +198,15 @@ const parseIdentitiesFromContent = (content, plan) => {
     const parsed = JSON.parse(jsonMatch[0]);
     const identities = parsed.identities;
     if (!Array.isArray(identities) || identities.length === 0) return generateMockIdentities(plan);
-    return identities.map((id) => ({
-      name: id.name || 'Brand',
-      slogan: id.slogan || '',
-      concept: id.concept || '',
-      tags: Array.isArray(id.tags) ? id.tags : []
-    }));
+    const maxCount = BRANDS_PER_PLAN[plan] ?? BRANDS_PER_PLAN.premium;
+    return identities
+      .slice(0, maxCount)
+      .map((id) => ({
+        name: id.name || 'Brand',
+        slogan: id.slogan || '',
+        concept: id.concept || '',
+        tags: Array.isArray(id.tags) ? id.tags : []
+      }));
   } catch {
     return generateMockIdentities(plan);
   }
@@ -213,74 +214,25 @@ const parseIdentitiesFromContent = (content, plan) => {
 
 /**
  * Generates mock identities (demo mode)
+ * free: 3, basic: 4, premium: 6, pro: 12
  */
 const generateMockIdentities = (plan) => {
-  const mockData = {
-    free: [
-      { 
-        name: "Lumina", 
-        slogan: "Brilliance in every step.", 
-        concept: "Swiss minimalism, Neo-Grotesk typography.", 
-        tags: ["Modern", "Light"] 
-      }
-    ],
-    basic: [
-      { 
-        name: "Vortex", 
-        slogan: "Driving tomorrow forward.", 
-        concept: "Cyberpunk style, neon gradients.", 
-        tags: ["Energy", "Tech"] 
-      },
-      { 
-        name: "Origen", 
-        slogan: "Naturally pure.", 
-        concept: "Organic aesthetics, earthy tones.", 
-        tags: ["Eco", "Pure"] 
-      }
-    ],
-    premium: [
-      { 
-        name: "Zenith", 
-        slogan: "Reach the unreachable.", 
-        concept: "Geometric luxury, midnight blue and gold.", 
-        tags: ["Elite", "Pinnacle"] 
-      },
-      { 
-        name: "Nexus", 
-        slogan: "Conexiones que importan.", 
-        concept: "Redes abstractas, gradientes violetas.", 
-        tags: ["Red", "Futuro"] 
-      },
-      { 
-        name: "Kinetix", 
-        slogan: "Movement without limits.", 
-        concept: "Speed lines, Italic Heavy typography.", 
-        tags: ["Agility", "Pro"] 
-      }
-    ],
-    pro: [
-      { 
-        name: "Aethel", 
-        slogan: "Legacy in evolution.", 
-        concept: "Modern classic serif, wide spacing.", 
-        tags: ["Luxury", "Heritage"] 
-      },
-      { 
-        name: "Quark", 
-        slogan: "Small but mighty impact.", 
-        concept: "Bauhaus architecture, primary colors.", 
-        tags: ["Science", "Pop"] 
-      },
-      { 
-        name: "Obsidian", 
-        slogan: "Strength in silence.", 
-        concept: "Monochrome, stone textures.", 
-        tags: ["Power", "Solid"] 
-      }
-    ]
-  };
-
-  return mockData[plan] || mockData.premium;
+  const allMocks = [
+    { name: "Lumina", slogan: "Brilliance in every step.", concept: "Swiss minimalism, Neo-Grotesk typography.", tags: ["Modern", "Light"] },
+    { name: "Vortex", slogan: "Driving tomorrow forward.", concept: "Cyberpunk style, neon gradients.", tags: ["Energy", "Tech"] },
+    { name: "Origen", slogan: "Naturally pure.", concept: "Organic aesthetics, earthy tones.", tags: ["Eco", "Pure"] },
+    { name: "Zenith", slogan: "Reach the unreachable.", concept: "Geometric luxury, midnight blue and gold.", tags: ["Elite", "Pinnacle"] },
+    { name: "Nexus", slogan: "Conexiones que importan.", concept: "Redes abstractas, gradientes violetas.", tags: ["Red", "Futuro"] },
+    { name: "Kinetix", slogan: "Movement without limits.", concept: "Speed lines, Italic Heavy typography.", tags: ["Agility", "Pro"] },
+    { name: "Aethel", slogan: "Legacy in evolution.", concept: "Modern classic serif, wide spacing.", tags: ["Luxury", "Heritage"] },
+    { name: "Quark", slogan: "Small but mighty impact.", concept: "Bauhaus architecture, primary colors.", tags: ["Science", "Pop"] },
+    { name: "Obsidian", slogan: "Strength in silence.", concept: "Monochrome, stone textures.", tags: ["Power", "Solid"] },
+    { name: "Pulse", slogan: "Feel the rhythm.", concept: "Dynamic gradients, bold sans-serif.", tags: ["Vital", "Motion"] },
+    { name: "Nova", slogan: "A new dawn.", concept: "Soft gradients, ethereal light.", tags: ["Fresh", "Hope"] },
+    { name: "Vertex", slogan: "Where paths converge.", concept: "Geometric precision, sharp angles.", tags: ["Tech", "Precision"] }
+  ];
+  const count = BRANDS_PER_PLAN[plan] ?? BRANDS_PER_PLAN.premium;
+  return allMocks.slice(0, count);
 };
 
 export default {
