@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   Lightbulb, 
   Sparkles, 
@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   Globe
 } from 'lucide-react';
+import html2canvas from 'html2canvas';
 import { generateBrandIdentities } from '../services/aiService';
 
 const MOCK_IDENTITIES = {
@@ -45,6 +46,7 @@ const BrandAIModule = () => {
   const [selectedPlan, setSelectedPlan] = useState('premium');
   const [selectedIdentity, setSelectedIdentity] = useState(null);
   const [identities, setIdentities] = useState([]);
+  const brandKitRef = useRef(null);
 
   const handleKeywordAdd = (e) => {
     if (e.key === 'Enter' && currentKeyword.trim() !== '') {
@@ -59,53 +61,30 @@ const BrandAIModule = () => {
     setKeywords(keywords.filter((_, i) => i !== index));
   };
 
-  const handleDownloadBrandKit = () => {
-    if (!selectedIdentity) return;
+  const handleDownloadBrandKit = async () => {
+    if (!selectedIdentity || !brandKitRef.current) return;
     const slug = selectedIdentity.name.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
     const date = new Date().toISOString().slice(0, 10);
 
-    const kit = {
-      brandName: selectedIdentity.name,
-      slogan: selectedIdentity.slogan,
-      concept: selectedIdentity.concept || '',
-      tags: selectedIdentity.tags || [],
-      seoScore: '9.8/10',
-      generatedAt: new Date().toISOString(),
-      projectContext: { description: projectDesc, keywords }
-    };
-
-    const txt = `BRAND360 — Brand Kit
-══════════════════════════════════════
-
-OFFICIAL NAMING
-${selectedIdentity.name.toUpperCase()}
-
-SLOGAN
-"${selectedIdentity.slogan}"
-
-CONCEPT
-${selectedIdentity.concept || '—'}
-
-TAGS
-${(selectedIdentity.tags || []).join(', ') || '—'}
-
-METRICS
-SEO Score: 9.8/10
-Generated: ${date}
-
-──────────────────────────────────────
-BRAND360 Identity Engine Pro
-`;
-
-    const json = JSON.stringify(kit, null, 2);
-
-    const blob = new Blob([txt + '\n\n--- JSON DATA ---\n\n' + json], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${slug}_BrandKit_${date}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
+    try {
+      const canvas = await html2canvas(brandKitRef.current, {
+        scale: 3,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        windowWidth: brandKitRef.current.scrollWidth,
+        windowHeight: brandKitRef.current.scrollHeight
+      });
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png', 1));
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${slug}_BrandKit_${date}.png`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Error al generar imagen:', err);
+    }
   };
 
   const handleGenerate = async () => {
@@ -343,26 +322,27 @@ BRAND360 Identity Engine Pro
                     <p className="text-slate-400">Your brand is ready for the global market.</p>
                   </div>
 
-                  {/* Final Visual Board */}
-                  <div className="bg-slate-950 rounded-[48px] overflow-hidden shadow-2xl relative">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/20 blur-[100px]" />
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-fuchsia-500/10 blur-[100px]" />
-                    
-                    <div className="p-16 text-center space-y-10 relative z-10">
-                      <div className="space-y-4">
-                        <span className="text-yellow-500 text-[10px] font-black uppercase tracking-[0.4em]">Official Naming</span>
-                        <h4 className="text-7xl font-black text-white tracking-tighter uppercase">{selectedIdentity?.name}</h4>
-                      </div>
+                  {/* Final Visual Board + metrics (capturado como imagen) */}
+                  <div ref={brandKitRef} className="space-y-6 p-8 bg-white rounded-3xl shadow-lg">
+                    <div className="bg-slate-950 rounded-[48px] overflow-hidden shadow-2xl relative">
+                      <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/20 blur-[100px]" />
+                      <div className="absolute bottom-0 left-0 w-64 h-64 bg-fuchsia-500/10 blur-[100px]" />
                       
-                      <div className="h-px w-20 bg-white/20 mx-auto" />
-                      
-                      <div className="space-y-4">
-                        <p className="text-white/60 text-2xl font-medium italic tracking-tight">"{selectedIdentity?.slogan}"</p>
+                      <div className="p-16 text-center space-y-10 relative z-10">
+                        <div className="space-y-4">
+                          <span className="text-yellow-500 text-[10px] font-black uppercase tracking-[0.4em]">Official Naming</span>
+                          <h4 className="text-7xl font-black text-white tracking-tighter uppercase">{selectedIdentity?.name}</h4>
+                        </div>
+                        
+                        <div className="h-px w-20 bg-white/20 mx-auto" />
+                        
+                        <div className="space-y-4">
+                          <p className="text-white/60 text-2xl font-medium italic tracking-tight">"{selectedIdentity?.slogan}"</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="grid grid-cols-2 gap-6">
+                    <div className="grid grid-cols-2 gap-6">
                     <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
                       <div className="w-12 h-12 bg-green-50 text-green-500 rounded-2xl flex items-center justify-center">
                         <Target size={24} />
@@ -381,6 +361,7 @@ BRAND360 Identity Engine Pro
                         <p className="text-xl font-black">Ready</p>
                       </div>
                     </div>
+                  </div>
                   </div>
 
                   <div className="flex flex-col gap-3">
